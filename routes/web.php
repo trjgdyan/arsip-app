@@ -2,26 +2,27 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\KategoriController;
+use App\Http\Controllers\SuratController;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Route::get('/dashboard', function () {
+//     return view('dashboard');
+// })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/surat/create', function () {
-    return view('surat.create');
-})->middleware(['auth', 'verified'])->name('surat.create');
+Route::get('/dashboard', [SuratController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 
-Route::get('/kategori', function () {
-    return view('kategori.index');
-})->middleware(['auth', 'verified'])->name('kategori.index');
+Route::resource('surat', SuratController::class)->middleware(['auth', 'verified']);
+Route::get('surat/{surat}/download', [SuratController::class, 'download'])
+    ->middleware(['auth', 'verified'])
+    ->name('surat.download');
 
-Route::get('/kategori/create', function () {
-    return view('kategori.create');
-})->middleware(['auth', 'verified'])->name('kategori.create');
+Route::resource('kategori', KategoriController::class)->middleware(['auth', 'verified']);
 
 Route::get('/about', function () {
     return view('about');
