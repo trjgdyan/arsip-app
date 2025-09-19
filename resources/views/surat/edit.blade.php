@@ -2,7 +2,7 @@
 
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-2xl text-white leading-tight">
+        <h2 class="font-semibold text-2xl text-blue-900 leading-tight">
             {{ __('Edit Surat') }}
             <div>
                 <p class="text-lg text-gray-200 dark:text-black">
@@ -18,6 +18,7 @@
             <div class="bg-white   p-6 rounded-lg shadow-lg">
                 <form action="{{ route('surat.update', $surat->id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
+                    @method('PUT')
                     <div class="mb-4">
                         <label for="nomor_surat" class="block text-gray-700 font-bold mb-2">Nomor Surat:</label>
                         <input type="text" id="nomor_surat" name="nomor_surat"
@@ -47,9 +48,8 @@
                     <div class="mb-4">
                         <label for="file_path" class="block text-gray-700 font-bold mb-2">File Surat (PDF):</label>
                         <input type="file" id="file_path" name="file_path" accept=".pdf"
-                            value="{{ old('file_path', $surat->file_path) }}"
                             class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            required>
+                            >
                     </div>
                     <div class="flex justify-start">
                         <button>

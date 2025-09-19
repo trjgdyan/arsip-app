@@ -2,9 +2,9 @@
 
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-2xl text-white leading-tight">
+        <h2 class="font-semibold text-2xl text-blue-900  leading-tight">
             {{ __('Detail Surat') }}
-            <div>
+            <div class="mt-4">
                 {{-- <p class="text-lg text-gray-200 dark:text-black">
                     Unggah surat yang telah terbit pada form ini untuk diarsipkan dengan tipe dokumen .pdf
                 </p> --}}
@@ -32,7 +32,7 @@
     </x-slot>
 
     <div class="mt-6 justify-center items-center flex">
-        <iframe src="{{ asset('storage/' . $surat->file_path) }}" width="90%" height="800px" style="border: none;">
+        <iframe src="{{ route('surat.stream', $surat->id) }}" width="90%" height="800px" style="border: none;">
         </iframe>
     </div>
 
@@ -46,3 +46,17 @@
     </div>
 
 </x-app-layout>
+
+<script>
+    @if (session('success'))
+        Swal.fire({
+            toast: true,
+            position: 'top',
+            icon: 'success',
+            title: "{{ session('success') }}",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true
+        });
+    @endif
+</script>

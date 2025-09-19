@@ -10,9 +10,12 @@ class KategoriController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $kategoris = Kategori::all();
+        if($request->filled('search')){
+            $kategoris = Kategori::where('nama_kategori', 'like', '%' . $request->search . '%')->get();
+        }       
         return view('kategori.index', compact('kategoris'));
     }
 
@@ -72,7 +75,6 @@ class KategoriController extends Controller
             'keterangan' => 'required|string',
         ]);
 
-        // $kategori->update($validated);
         $kategoriUpdate = [
             'nama_kategori' => $validated['nama_kategori'],
             'keterangan' => $validated['keterangan'],

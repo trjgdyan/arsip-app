@@ -2,7 +2,7 @@
 
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-2xl text-white leading-tight">
+        <h2 class="font-semibold text-2xl text-blue-900 leading-tight">
             {{ __('Unggah Surat Baru') }}
             <div>
                 <p class="text-lg text-gray-200 dark:text-black">
@@ -52,7 +52,7 @@
                                 class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 mr-2">Kembali</a>
                         </button>
                         <button type="submit"
-                            class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Unggah Surat</button>
+                            class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Unggah Surat</button>
                     </div>
                 </form>
     </div>

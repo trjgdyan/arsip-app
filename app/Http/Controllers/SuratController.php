@@ -6,6 +6,7 @@ use App\Models\Surat;
 use Illuminate\Http\Request;
 use App\Models\Kategori;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class SuratController extends Controller
 {
@@ -14,8 +15,6 @@ class SuratController extends Controller
      */
     public function index(Request $request)
     {
-        // $surats = Surat::with('kategori')->get();
-        // return view('dashboard', compact('surats'));
         $query = Surat::with('kategori');
         if ($request->filled('search')) {
             $query->where('judul', 'like', '%' . $request->search . '%');
@@ -46,7 +45,9 @@ class SuratController extends Controller
             'file_path' => 'required|mimes:pdf|max:2048',
         ]);
 
-        $path = $request->file('file_path')->store('surats', 'public');
+        // jangan lupa benerin jangan di taruh di public. nanti semua orang bisa akses. taruh di private storage
+        // $path = $request->file('file_path')->store('surats', 'public');
+        $path = $request->file('file_path')->store('surats');
 
         Surat::create([
             'nomor_surat' => $validated['nomor_surat'],
@@ -84,23 +85,23 @@ class SuratController extends Controller
     public function update(Request $request, Surat $surat)
     {
         $validated = $request->validate([
-            'nomor_surat' => 'required|string|max:50|unique:surats,nomor_surat',
+            'nomor_surat' => 'required|string|max:50|unique:surats,nomor_surat,' . $surat->id,
             'judul' => 'required|string|max:100',
             'kategori_id' => 'required|exists:kategoris,id',
-            'file_path' => 'required|mimes:pdf|max:2048',
+            'file_path' => 'nullable|mimes:pdf|max:2048',
         ]);
 
-        $path = $request->file('file_path')->store('surats', 'public');
+        if ($request->hasFile('file_path')) {
+            if ($surat->file_path && Storage::exists($surat->file_path)) {
+                Storage::delete($surat->file_path);
+            }
+            $validated['file_path'] = $request->file('file_path')->store('surats');
+        }
 
-        Surat::create([
-            'nomor_surat' => $validated['nomor_surat'],
-            'judul' => $validated['judul'],
-            'kategori_id' => $validated['kategori_id'],
-            'file_path' => $path
+        $surat->update($validated);
 
-        ]);
 
-        return redirect()->route('surat.show')->with('success', 'Surat berhasil diupdate.');
+        return redirect()->route('surat.show', $surat->id)->with('success', 'Surat berhasil diupdate.');
     }
 
     /**
@@ -108,7 +109,9 @@ class SuratController extends Controller
      */
     public function destroy(Surat $surat)
     {
-        $surat = Surat::findOrFail($surat->id);
+        if ($surat->file_path && Storage::exists($surat->file_path)) {
+            Storage::delete($surat->file_path);
+        }
         $surat->delete();
 
         return redirect()->route('surat.index')->with('success', 'Surat berhasil dihapus.');
@@ -116,12 +119,50 @@ class SuratController extends Controller
 
     public function download(Surat $surat)
     {
-        $filePath = storage_path('app/public/' . $surat->file_path);
-
-        if (file_exists($filePath)) {
-            return response()->download($filePath, $surat->judul . '.pdf');
+        if (!$surat->file_path || !Storage::exists($surat->file_path)) {
+            return redirect()->back()->with('error', 'File tidak ditemukan.');
         }
 
-        return redirect()->back()->with('error', 'File tidak ditemukan.');
+        // return response()->download(storage_path('app/' . $surat->file_path), $surat->judul . '.pdf');
+        return response()->download(Storage::path($surat->file_path), $surat->judul . '.pdf');
+    }
+
+    public function export()
+    {
+        $surats = Surat::with('kategori')->get();
+
+        $csvData = "Nomor Surat,Judul,Kategori,Tanggal Rilis,User\n";
+
+        foreach ($surats as $surat) {
+            $judul = $this->escapeForCsv($surat->judul);
+            $kategori = $this->escapeForCsv($surat->kategori->nama_kategori);
+            $tanggalRilis = $surat->created_at->format('Y-m-d');
+            $username = Auth::user()->name;
+
+            $csvData .= "{$surat->nomor_surat},\"{$judul}\",\"{$kategori}\",\"{$tanggalRilis}\",\"{$username}\",\n";
+        }
+
+        $fileName = 'surat_export_' . date('Ymd_His') . '.csv';
+
+        return response($csvData)
+            ->header('Content-Type', 'text/csv')
+            ->header('Content-Disposition', "attachment; filename={$fileName}");
+    }
+
+    private function escapeForCsv($value)
+    {
+        if (preg_match('/^[-=+@]/', $value)) {
+            return "'" . $value;
+        }
+        return $value;
+    }
+
+    public function stream(Surat $surat)
+    {
+        if (!$surat->file_path || !Storage::exists($surat->file_path)) {
+            return redirect()->back()->with('error', 'File tidak ditemukan.');
+        }
+
+        return response()->file(Storage::path($surat->file_path));
     }
 }

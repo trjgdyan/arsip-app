@@ -17,34 +17,39 @@
         <link rel="stylesheet" href="https://cdn.datatables.net/2.3.3/css/dataTables.dataTables.min.css">
         <script src="https://cdn.datatables.net/2.3.3/js/dataTables.min.js"></script>
 
+        {{-- alert --}}
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
 
-    <body class="font-sans antialiased bg-gradient-to-br from-purple-100 via-white to-blue-100">
+    <body class="font-sans antialiased bg-gradient-to-br from-blue-200 via-blue to-blue-200">
         <div class="min-h-screen flex">
 
             {{-- Sidebar --}}
-            <div class="w-64 min-h-screen fixed mx-4 mt-4 shadow-lg rounded bg-slate-600-300/70 backdrop-blur-md">
-                @include('layouts.sidebar')
-            </div>
+            @include('layouts.sidebar')
 
-
-            {{-- Navbar --}
-                {{-- <div
-                class="fixed top-4 left-72 right-4 z-50 h-16  flex items-center px-4"> --}}
+        {{-- Navbar --}}
             <div
-                class="fixed top-4 left-72 right-4 z-50 h-16 rounded bg-white/70 backdrop-blur-sm shadow-lg flex items-center px-4">
+                class="fixed top-4 left-0 md:left-72 right-4 z-50 h-16 rounded bg-blue-900 backdrop-blur-sm shadow-lg flex items-center px-4 justify-between">
+
+                {{-- Tombol toggle hanya muncul di mobile --}}
+                <button id="sidebarToggle" class="md:hidden text-white focus:outline-none">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+
                 @include('layouts.navigation')
             </div>
 
-
             {{-- Konten utama --}}
-            <div class="flex-1 ml-72 mr-4 mt-24 mb-4 rounded-2xl bg-white/70 backdrop-blur-md shadow-lg p-6">
-                {{-- Header opsional --}}
+            <div class="flex-1 md:ml-72 mr-4 mt-24 mb-4 rounded-2xl bg-white/70 backdrop-blur-md shadow-lg p-6">
                 @isset($header)
-                    {{-- <header class="bg-white/80 backdrop-blur-sm dark:bg-purple-300 shadow rounded-lg mb-6"> --}}
                     <header class="mb-6">
                         <div class="max-w-7xl mx-auto py-4 px-6">
                             {{ $header }}
@@ -52,13 +57,32 @@
                     </header>
                 @endisset
 
-                {{-- Page Content --}}
                 <main>
                     {{ $slot }}
                 </main>
             </div>
 
-            </div">
+        </div>
+
+        <script>
+            const sidebar = document.getElementById('sidebar');
+            const sidebarToggle = document.getElementById('sidebarToggle');
+
+            sidebarToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('-translate-x-full');
+            });
+        </script>
     </body>
+
+
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+
+        sidebarToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+        });
+    </script>
+
 
     </html>
