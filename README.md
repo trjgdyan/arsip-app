@@ -12,11 +12,11 @@ Dengan aplikasi ini, penyimpanan dokumen menjadi lebih rapi, aman, serta mudah d
 
 -   📝 Register dan login
 -   📊 Dashboard ringkasan arsip
--   📁 Manajemen arsip surat (➕ tambah, ✏️ edit, 👁️ lihat, ❌ hapus)
+-   📁 Manajemen arsip surat (tambah, edit, lihat, hapus)
 -   📄 Unduh surat dalam format **.pdf**
 -   📤 Export data arsip surat ke **.csv**
 -   🔍 Pencarian arsip surat berdasarkan nama surat
--   🗂️ Manajemen kategori surat (➕ tambah, ✏️ edit, 👁️ lihat, ❌ hapus)
+-   🗂️ Manajemen kategori surat (tambah, edit, lihat, hapus)
 -   👤 Lihat informasi akun (profile)
 -   🔑 Mengganti password
 -   🗑️ Menghapus akun
