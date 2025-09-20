@@ -2,7 +2,7 @@
 
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-2xl text-white leading-tight">
+        <h2 class="font-semibold text-2xl text-blue-900 leading-tight">
             {{ __('Tambah Kategori Baru') }}
             <div>
                 <p class="text-lg text-gray-200 dark:text-black">
